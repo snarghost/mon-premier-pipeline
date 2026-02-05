@@ -1,0 +1,26 @@
+# Le nom de ton pipeline tel qu'il apparaîtra sur GitHub
+name: Verification du Code
+
+# Quand est-ce que le pipeline se déclenche ? 
+on: [push] # À chaque "push" de code
+
+jobs:
+  # On définit une tâche nommée "test-unitaire"
+  test-unitaire:
+    # Le type de machine virtuelle à utiliser (Linux Ubuntu est le standard)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Copier le code de ton dépôt sur la machine virtuelle
+      - name: Recuperation du code
+        uses: actions/checkout@v4
+
+      # Étape 2 : Installer Python sur la machine
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # Étape 3 : Lancer le test
+      - name: Executer le test de calcul
+        run: python test_app.py

@@ -21,6 +21,10 @@ jobs:
         with:
           python-version: '3.9'
 
-      # Étape 3 : Lancer le test
-      - name: Executer le test de calcul
-        run: python test_app.py
+      # Étape 3 : Installer pytest (l'outil de test)
+      - name: Installer Pytest
+        run: pip install pytest
+
+      # Étape 4 : Lancer les tests avec pytest
+      - name: Executer les tests
+        run: pytest test_app.py

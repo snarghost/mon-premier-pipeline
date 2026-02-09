@@ -14,12 +14,32 @@ jobs:
       - run: pytest test_app.py
 
   # NOUVEAU JOB : Construction de l'image Docker
-  build-docker:
+  build-and-push:
     runs-on: ubuntu-latest
-    # On attend que les tests unitaires passent avant de lancer Docker
-    needs: test-unitaire 
+    needs: test-unitaire
+    # On ajoute des permissions pour que le robot puisse écrire dans le registry
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Build de l'image Docker
-        run: docker build -t mon-image-test:${{ github.sha }} .
+
+      # Étape 1 : Se connecter au registre de GitHub
+      - name: Connexion au GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Étape 2 : Construire et envoyer l'image
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # Le nom de l'image doit être en minuscules sur GHCR
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/mon-app-banque:latest
+            ghcr.io/${{ github.repository_owner }}/mon-app-banque:${{ github.sha }}

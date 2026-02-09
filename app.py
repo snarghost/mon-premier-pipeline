@@ -1,2 +1,2 @@
 def calcul_interet(montant):
-    return montant * 0.10
+    return montant * 0.05
